@@ -1,0 +1,74 @@
+class Solution {
+    public int[] processQueries(int c, int[][] connections, int[][] queries) {
+        List<Integer> list = new ArrayList<>();
+        List<List<Integer>> adj = new ArrayList<>();
+
+        for(int i=0; i<=c; i++){
+            adj.add(new ArrayList<>());
+        }
+
+        for(int i=0; i<connections.length; i++){
+            int u = connections[i][0];
+            int v = connections[i][1];
+
+            adj.get(u).add(v);
+            adj.get(v).add(u);
+        }
+
+        int[] compId = new int[c+1];
+        int id = 1;
+
+        for(int i=1; i<=c; i++){
+            if(compId[i] != 0) continue;
+            
+            Queue<Integer> q = new LinkedList<>();
+            q.add(i);
+            compId[i] = id;
+
+            while(!q.isEmpty()){
+                int node = q.poll();
+
+                for(int it : adj.get(node)){
+                    if(compId[it] == 0){
+                        compId[it] = id;
+                        q.add(it);
+                    }
+                }
+            }
+
+            id++;
+        }
+
+        Map<Integer, TreeSet<Integer>> map = new HashMap<>();
+
+        for(int i=1; i<=c; i++){
+            int comp = compId[i];
+            map.putIfAbsent(comp, new TreeSet<>());
+            map.get(comp).add(i);
+        }
+
+        for(int i=0; i<queries.length; i++){
+            int type = queries[i][0];
+            int station = queries[i][1];
+
+            if(type == 2){
+                map.get(compId[station]).remove(station);
+            }
+
+            if(type == 1){
+                if(map.get(compId[station]).contains(station)) list.add(station);
+                else if(map.get(compId[station]).isEmpty()) list.add(-1);
+                else list.add(map.get(compId[station]).first());
+            }
+        }
+
+
+        int[] ans = new int[list.size()];
+
+        for(int i=0; i<list.size(); i++){
+            ans[i] = list.get(i);
+        }
+
+        return ans;
+    }
+}
