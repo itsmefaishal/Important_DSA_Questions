@@ -1,0 +1,36 @@
+class Solution {
+    int longest = -1;
+    public int longestCycle(int[] edges) {
+        int n = edges.length;
+        boolean[] vis = new boolean[n];
+        int[] path = new int[n];
+
+        for(int i=0; i<n; i++){
+            if(vis[i]) continue;
+            dfs(i,edges,path,0,vis);
+        }
+
+        return longest;
+    }
+    private int dfs(int v, int[] edges, int[] path, int cnt, boolean[] vis){
+        cnt++;
+        path[v] = cnt;
+        vis[v] = true;
+
+        int nbr = edges[v];
+
+        if(nbr != -1){
+            if(path[nbr] != 0){
+                int len = cnt - path[nbr] + 1;
+                longest = Math.max(longest, len);
+            }
+            else if(!vis[nbr]){
+                dfs(nbr, edges, path, cnt, vis);
+            }
+        }
+
+        path[v] = 0;
+
+        return longest;
+    }
+}
