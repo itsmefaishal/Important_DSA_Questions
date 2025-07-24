@@ -1,0 +1,49 @@
+In this algo, it is applicable in DAG only
+and if there is a cycle we will never be able to reach every node
+
+class Solution {
+    public static ArrayList<Integer> topoSort(int V, int[][] edges) {
+        int[] inDeg = new int[V];
+        List<List<Integer>> adj = new ArrayList<>();
+        
+        for(int i=0; i<V; i++){
+            adj.add(new ArrayList<>());
+        }
+        
+        for(int i=0; i<edges.length; i++){
+            int u = edges[i][0];
+            int v = edges[i][1];
+            
+            adj.get(u).add(v);
+            inDeg[v]++;
+        }
+        
+        Queue<Integer> q = new LinkedList<>();
+        ArrayList<Integer> list = new ArrayList<>();
+        
+        for(int i=0; i<V; i++){
+            if(inDeg[i] == 0){
+                q.add(i);
+                list.add(i);
+            }
+        }
+        
+        
+        while(!q.isEmpty()){
+            int node = q.poll();
+            
+            if(inDeg[node] == 0 && !list.contains(node)) list.add(node);
+            
+            for(int v : adj.get(node)){
+                if(inDeg[v] > 0){
+                    inDeg[v]--;
+                }
+                if(inDeg[v] == 0){
+                    q.add(v);
+                }
+            }
+        }
+        
+        return list;
+    }
+}
