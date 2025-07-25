@@ -1,0 +1,29 @@
+Always remember, whenever u encounter a problem which seems a application of sliding window
+try to think both ways i.e. maybe ans lies within the window range or outside the windwo range
+
+class Solution {
+    public int maxScore(int[] cardPoints, int k) {
+        int sum = 0;
+        int n = cardPoints.length;
+        int l = 0;
+        int maxi = 0;
+        int total = 0;
+
+        for(int num : cardPoints) total += num;
+
+        for(int r=-1; r<n && l<n;){
+            while(r-l+1 < n-k){
+                r++;
+                sum += r<n ? cardPoints[r] : 0;
+            }
+            if(r<n && r-l+1 == n-k){
+                maxi = Math.max(maxi, (total-sum));
+            }
+            
+            sum -= cardPoints[l];
+            l++;
+        }
+
+        return maxi;
+    }
+}
