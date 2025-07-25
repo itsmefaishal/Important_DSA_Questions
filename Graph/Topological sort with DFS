@@ -1,0 +1,42 @@
+Traverse till the last node, which has no further nodes,
+then before exiting that call add that in the data structure and return.
+
+class Solution {
+    public static ArrayList<Integer> topoSort(int V, int[][] edges) {
+        List<List<Integer>> adj = new ArrayList<>();
+        boolean[] vis = new boolean[V];
+        ArrayList<Integer> list = new ArrayList<>();
+        
+        for(int i=0; i<V; i++){
+            adj.add(new ArrayList<>());
+        }
+        
+        for(int i=0; i<edges.length; i++){
+            int u = edges[i][0];
+            int v = edges[i][1];
+            
+            adj.get(u).add(v);
+        }
+        
+        for(int i=0; i<V; i++){
+            if(!vis[i]){
+                dfs(i,adj,vis,list);
+            }
+        }
+        
+        Collections.reverse(list);
+        
+        return list;
+    }
+    private static void dfs(int v, List<List<Integer>> adj, boolean[] vis, ArrayList<Integer> list){
+        vis[v] = true;
+        
+        for(int node : adj.get(v)){
+            if(!vis[node]){
+                dfs(node,adj,vis,list);
+            }
+        }
+        
+        list.add(v);
+    }
+}
