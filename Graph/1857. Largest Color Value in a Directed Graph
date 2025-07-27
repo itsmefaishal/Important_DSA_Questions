@@ -1,0 +1,53 @@
+Bahot jaruri variation hai topo sort and with unique thinking
+ky krna hai ki har node me visit krne se pehle calculate krlo ki ky maximum frequency hai colors ki
+aur usko store krlo fir current node pr aur age node pr badh jao
+iss tarah se tm hr node ke different path ke liye optimal value calculate krte hue chaloge
+
+class Solution {
+    public int largestPathValue(String colors, int[][] edges) {
+        int n = colors.length();
+        List<List<Integer>> adj = new ArrayList<>();
+        int[] inDeg = new int[n];
+
+        for(int i=0; i<n; i++){
+            adj.add(new ArrayList<>());
+        }
+
+        for(int i=0; i<edges.length; i++){
+            int u = edges[i][0];
+            int v = edges[i][1];
+
+            adj.get(u).add(v);
+            inDeg[v]++;
+        }
+
+        Queue<Integer> q = new LinkedList<>();
+        int[][] freq = new int[n][26];
+
+        for(int i=0; i<n; i++){
+            if(inDeg[i] == 0) q.add(i);
+        }
+
+        int ans = 0, processed = 0;
+
+        while(!q.isEmpty()){
+            int node = q.poll();
+            freq[node][colors.charAt(node)-'a']++;
+            processed++;
+            ans = Math.max(ans, freq[node][colors.charAt(node)-'a']);
+
+            for(int nbrs : adj.get(node)){
+                inDeg[nbrs]--;
+                if(inDeg[nbrs] == 0){
+                    q.add(nbrs);
+                }
+
+                for(int i=0; i<26; i++){
+                    freq[nbrs][i] = Math.max(freq[nbrs][i], freq[node][i]);
+                }
+            } 
+        }
+
+        return processed == n ? ans : -1;
+    }
+}
