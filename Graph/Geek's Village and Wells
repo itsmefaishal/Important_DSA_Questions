@@ -1,0 +1,86 @@
+https://www.geeksforgeeks.org/problems/geeks-village-and-wells--170647/1
+
+Geek's village is represented by a 2-D matrix of characters of size n*m, where
+
+H - Represents a house
+W - Represents a well
+. - Represents an open ground
+N - Prohibited area(Not allowed to enter this area)
+
+Every house in the village needs to take water from a well, as the family members are so busy with their work, so every family wants to take the water from a well in minimum time, which is possible only if they have to cover as less distance as possible. Your task is to determine the minimum distance that a person in the house should travel to take out the water and carry it back to the house.
+
+A person is allowed to move only in four directions left, right, up, and down. That means if he/she is the cell (i,j), then the possible cells he/she can reach in one move are (i,j-1),(i,j+1),(i-1,j),(i+1,j), and the person is not allowed to move out of the grid.
+
+Note: For all the cells containing 'N', 'W' and '.' our answer should be 0, and for all the houses where there is no possibility of taking water our answer should be -1.
+
+// It is a very nice variation and implementation of BFS traversal question
+
+class Tri{
+    int row;
+    int col;
+    int dis;
+    
+    Tri(int r, int c, int d){
+        row = r;
+        col = c;
+        dis = d;
+    }
+}
+class Solution {
+    public int[][] chefAndWells(int n, int m, char c[][]) {
+        boolean[][] vis = new boolean[n][m];
+        Queue<Tri> q = new LinkedList<>();
+        int[][] res = new int[n][m];
+        
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(c[i][j] == 'W'){
+                    q.add(new Tri(i,j,0));
+                }
+            }
+        }
+        
+        while(!q.isEmpty()){
+            Tri tri = q.poll();
+            int r = tri.row;
+            int cc = tri.col;
+            int d = tri.dis;
+            
+            vis[r][cc] = true;
+            
+            int[] dr = {0,0,1,-1};
+            int[] dc = {1,-1,0,0};
+            
+            for(int i=0; i<4; i++){
+                int row = r + dr[i];
+                int col = cc + dc[i];
+                
+                if(row>=0&&row<n&&col>=0&&col<m&&!vis[row][col]){
+                    if(c[row][col] == 'N'){
+                        vis[row][col] = true;
+                    }
+                    else if(c[row][col] == '.' || c[row][col] == 'H'){
+                        vis[row][col] = true;
+                        res[row][col] = (d+1)*2;
+                        q.add(new Tri(row,col,d+1));
+                    }
+                }
+            }
+        }
+        
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(!vis[i][j]){
+                    if(c[i][j] == 'H'){
+                        res[i][j] = -1;
+                    }
+                }
+                if(c[i][j] == '.'){
+                    res[i][j] = 0;
+                }
+            }
+        }
+        
+        return res;
+    }
+}
