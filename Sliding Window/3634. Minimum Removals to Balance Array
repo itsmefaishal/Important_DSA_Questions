@@ -1,0 +1,21 @@
+It has a unique way to approach this problem using sliding window
+
+class Solution {
+    public int minRemoval(int[] nums, int k) {
+        int maxLen = 0;
+        int l = 0;
+        int n = nums.length;
+        Arrays.sort(nums);
+
+        for(int i=0; l<n && i<n;){
+            while(l<n && i<n && (long)nums[l] * (long)k >= (long)nums[i]){
+                maxLen = Math.max(maxLen, i - l + 1);
+                i++;
+            }
+
+            l++;
+        }
+
+        return n - maxLen;
+    }
+}
