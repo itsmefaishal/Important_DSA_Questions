@@ -1,0 +1,24 @@
+It is marked easy but it really challenged me to think, and the approach was unique and impressive
+
+class Solution {
+    public int earliestFinishTime(int[] landStartTime, int[] landDuration, int[] waterStartTime, int[] waterDuration) {
+        int minLand = 100000;
+        int minWater = 100000;
+        int ans = 100000;
+
+        for(int i=0; i<landStartTime.length; i++){
+            minLand = Math.min(minLand, landStartTime[i] + landDuration[i]);
+        }
+
+        for(int i=0; i<waterStartTime.length; i++){
+            minWater = Math.min(minWater, waterStartTime[i] + waterDuration[i]);
+            ans = Math.min(ans, waterDuration[i] + Math.max(minLand, waterStartTime[i]));
+        }
+
+        for(int i=0; i<landStartTime.length; i++){
+            ans = Math.min(ans, landDuration[i] + Math.max(minWater, landStartTime[i]));
+        }
+
+        return ans;
+    }
+}
