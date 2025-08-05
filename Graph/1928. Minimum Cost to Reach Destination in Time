@@ -1,0 +1,72 @@
+Dijkstra very fined approach 
+
+class Pair{
+    int city;
+    int time;
+    Pair(int c, int t){
+        city = c;
+        time = t;
+    }
+}
+class Tri{
+    int city;
+    int time;
+    int fees;
+    Tri(int c, int t, int f){
+        city = c;
+        time = t;
+        fees = f;
+    }
+}
+class Solution {
+    public int minCost(int maxTime, int[][] edges, int[] passingFees) {
+        List<List<Pair>> adj = new ArrayList<>();
+        int n = passingFees.length;
+
+        for(int i=0; i<n; i++){
+            adj.add(new ArrayList<>());
+        }
+
+        for(int i=0; i<edges.length; i++){
+            int u = edges[i][0];
+            int v = edges[i][1];
+            int c = edges[i][2];
+
+            adj.get(u).add(new Pair(v,c));
+            adj.get(v).add(new Pair(u,c));
+        }
+
+        PriorityQueue<Tri> q = new PriorityQueue<>((a,b) -> Integer.compare(a.fees,b.fees));
+        q.add(new Tri(0,0,passingFees[0]));
+
+        int minFee = Integer.MAX_VALUE;
+        int[] minTime = new int[n];
+        Arrays.fill(minTime, Integer.MAX_VALUE);
+        minTime[0] = 0;
+
+        while(!q.isEmpty()){
+            Tri tri = q.poll();
+            int city = tri.city;
+            int fee = tri.fees;
+            int time  = tri.time;
+
+            if(city == n-1){
+                if(time <= maxTime){
+                    minFee = Math.min(fee, minFee);
+                }
+            }
+
+            for(Pair nbr : adj.get(city)){
+                int nCity = nbr.city;
+                int nTime = nbr.time;
+
+                if(nTime + time > maxTime || time + nTime >= minTime[nCity]) continue;
+                minTime[nCity] = time + nTime;
+
+                q.add(new Tri(nCity, nTime+time, fee+passingFees[nCity]));
+            }
+        }
+
+        return minFee == Integer.MAX_VALUE ? -1 : minFee;
+    }
+}
