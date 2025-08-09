@@ -1,0 +1,56 @@
+Nice dijkstra question with pinch of DP optimization
+
+class Point{
+    int row;
+    int col;
+    int effort;
+    Point(int r, int c, int e){
+        row = r;
+        col = c;
+        effort = e;
+    }
+}
+class Solution {
+    public int minimumEffortPath(int[][] heights) {
+        int m = heights.length;
+        int n = heights[0].length;
+        int[][] t = new int[m][n];
+
+        for(int[] r : t){
+            Arrays.fill(r, Integer.MAX_VALUE);
+        }
+
+        PriorityQueue<Point> q = new PriorityQueue<>((a,b) -> Integer.compare(a.effort, b.effort));
+        q.add(new Point(0,0,0));
+        t[0][0] = 0;
+
+        while(!q.isEmpty()){
+            Point p = q.poll();
+            int r = p.row;
+            int c = p.col;
+            int e = p.effort;
+
+            if(e > t[r][c]) continue;
+            if(r == m-1 && c == n-1) return e;
+
+            int[] dr = {0,0,1,-1};
+            int[] dc = {1,-1,0,0};
+
+            for(int i=0; i<4; i++){
+                int row = r + dr[i];
+                int col = c + dc[i];
+
+                if(row<m && col<n && row>=0 && col>=0){
+                    int nextEffort = Math.max(e, Math.abs(heights[row][col] - heights[r][c]));
+
+                    if(nextEffort < t[row][col]){
+                        t[row][col] = nextEffort;
+                        q.add(new Point(row,col,nextEffort));
+                    }
+                }
+            }
+        }
+
+        return 0;  
+    }
+}
