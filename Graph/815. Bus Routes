@@ -1,0 +1,61 @@
+This question was very impressive 
+I have to calculate first that 
+    the number of buses crossing a particular stop
+then, I started my journey from source keeping the record of how many buses I took
+I check then, which routes are accessible from my current bus
+    then iterated over those stops in these routes and looked for my destination
+if I got my destination then i return the ans
+if not, I added the next stop which needs to be visited by me
+
+class Pair{
+    int stop;
+    int busTaken;
+    Pair(int s, int b){
+        stop = s;
+        busTaken = b;
+    }
+}
+class Solution {
+    public int numBusesToDestination(int[][] routes, int source, int target) {
+        if(source == target) return 0;
+
+        int m = routes.length;
+        Map<Integer, List<Integer>> stopsToBuses = new HashMap<>();
+
+        for(int i=0; i<m; i++){
+            for(int stop : routes[i]){
+                stopsToBuses.computeIfAbsent(stop, k -> new ArrayList<>()).add(i);
+            }
+        }
+
+        boolean[] visitedBus = new boolean[m];
+        Set<Integer> stopVisited = new HashSet<>();
+        Queue<Pair> q = new LinkedList<>();
+        q.add(new Pair(source, 0));
+        stopVisited.add(source);
+
+        while(!q.isEmpty()){
+            Pair p = q.poll();
+            int currStop = p.stop;
+            int busTaken = p.busTaken;
+
+            if(stopsToBuses.get(currStop) == null) continue;
+            
+            for(int bus : stopsToBuses.get(currStop)){
+                if(visitedBus[bus]) continue;
+                visitedBus[bus] = true;
+
+                for(int stop : routes[bus]){
+                    if(stop == target) return busTaken+1;
+
+                    if(!stopVisited.contains(stop)){
+                        stopVisited.add(stop);
+                        q.add(new Pair(stop, busTaken+1));
+                    }
+                }
+            }
+        }
+
+        return -1;
+    }
+}
