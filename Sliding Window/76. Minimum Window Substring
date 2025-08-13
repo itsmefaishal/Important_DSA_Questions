@@ -1,0 +1,64 @@
+Labeled - Hard
+It was not hard u just have to think from that pov
+
+What I did was first
+kept the record of the string which i need to match i.e. 't'
+
+after that, I iterated over 's', and whenever I encounter char viz in 't' I reduce it from map and also reduce the cnt
+same with the char viz not in 't', I also put those in map with reducing value
+whenever my cnt == 0;
+I check for the length of the minimum window with keeping the left and right
+
+class Solution {
+    public String minWindow(String s, String t) {
+        int ns = s.length(), nt = t.length();
+
+        if(nt > ns) return "";
+        if(s.equals(t)) return s;
+
+        int cnt = nt, left = -1, right = 0, l = 0, window = 100001;
+        Map<Character, Integer> map = new HashMap<>();
+
+        for(int i=0; i<nt; i++){
+            char ch = t.charAt(i);
+
+            map.put(ch, map.getOrDefault(ch, 0)+1);
+        }
+
+        for(int i=0; i<ns; i++){
+            char ch = s.charAt(i);
+
+            if(map.containsKey(ch)){
+                if(map.get(ch) > 0){
+                    cnt--;
+                }
+
+                map.put(ch, map.get(ch)-1);
+            }
+            else{
+                map.put(ch, map.getOrDefault(ch, 0)-1);
+            }
+
+            while(cnt == 0){
+                char c = s.charAt(l);
+
+                if(window > i - l + 1){
+                    window = i - l + 1;
+
+                    right = i;
+                    left = l;
+                }
+
+                map.put(c, map.getOrDefault(c, 0)+1);
+
+                if(map.get(c) > 0){
+                    cnt++;
+                }
+
+                l++;
+            }
+        }
+        
+        return left == -1 ? "" : s.substring(left, right+1);
+    }
+}
