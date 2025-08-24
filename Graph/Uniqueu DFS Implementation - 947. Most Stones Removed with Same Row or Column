@@ -1,0 +1,32 @@
+class Solution {
+    public int removeStones(int[][] stones) {
+        int n = stones.length;
+
+        boolean[] vis = new boolean[n];
+        int cnt = 0;
+
+        for(int i=0; i<n; i++){
+            if(vis[i]) continue;
+
+            dfs(stones,vis,i);
+            cnt++;
+        }
+
+        return n - cnt;
+    }
+    private void dfs(int[][] st, boolean[] vis, int id){
+        
+        int[] stone1 = st[id];
+        vis[id] = true;
+
+        for(int i=0; i<st.length; i++){
+            int[] stone2 = st[i];
+
+            if(i == id || vis[i]) continue;
+
+            if(stone1[0] == stone2[0] || stone1[1] ==  stone2[1]){
+                dfs(st, vis, i);
+            }
+        }
+    }
+}
