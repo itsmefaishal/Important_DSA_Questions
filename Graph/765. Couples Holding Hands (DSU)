@@ -1,0 +1,65 @@
+In this we are treating every couple as a node,
+and where ever we find that a couple is misplaced from its ideal position
+we connect it with its partners node.
+note - node is like a seat with two space in which a couple can sit
+and we count all the connected components and return the N-connected components
+
+class DSU{
+    int[] parent;
+    int size[];
+
+    DSU(int n){
+        parent = new int[n];
+        size = new int[n];
+
+        for(int i=0; i<n; i++){
+            parent[i] = i;
+            size[i] = 1;
+        }
+    }
+
+    public int findParent(int node){
+        if(parent[node] == node){
+            return node;
+        }
+
+        return parent[node] = findParent(parent[node]);
+    }
+
+    public void unionBySize(int u, int v){
+        int pu = findParent(u);
+        int pv = findParent(v);
+
+        if(pu != pv){
+            if(size[pu] >= size[pv]){
+                parent[pv] = pu;
+                size[pu] += size[pv];
+            }
+            else{
+                parent[pu] = pv;
+                size[pv] += size[pu];
+            }
+        }
+    }
+}
+class Solution {
+    public int minSwapsCouples(int[] row) {
+        int n = row.length/2;
+        DSU dsu = new DSU(n);
+
+        for(int i=0; i<row.length; i += 2){
+            int u = row[i]/2;
+            int v = row[i+1]/2;
+
+            dsu.unionBySize(u,v);
+        }
+
+        int cnt = 0;
+
+        for(int i=0; i<n; i++){
+            if(dsu.parent[i] == i) cnt++;
+        }
+
+        return n - cnt;
+    }
+}
