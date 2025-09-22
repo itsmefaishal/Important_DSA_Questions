@@ -1,0 +1,83 @@
+class UF{
+    public int[] parent;
+    public int[] size;
+
+    UF(int n){
+        parent = new int[n];
+        size = new int[n];
+
+        for(int i=0; i<n; i++){
+            parent[i] = i;
+            size[i] = 1;
+        }
+    }
+
+    public int find(int node){
+        if(parent[node] == node){
+            return node;
+        }
+
+        return parent[node] = find(parent[node]);
+    }
+
+    public void union(int u, int v){
+        int pu = find(u);
+        int pv = find(v);
+
+        if(pu != pv){
+            if(size[pu] >= size[pv]){
+                parent[pv] = pu;
+                size[pu] += size[pv];
+            }
+            else{
+                parent[pu] = pv;
+                size[pv] += size[pu];
+            }
+        }
+    }
+}
+class Solution {
+    public int[] findRedundantDirectedConnection(int[][] edges) {
+        int n = edges.length;
+
+        int[] inDeg = new int[n+1];
+        Arrays.fill(inDeg, -1);
+
+        UF uf = new UF(n+1);
+        int bl1 = -1, bl2 = -1;
+
+        for(int i=0; i<n; i++){
+            int u = edges[i][0];
+            int v = edges[i][1];
+
+            if(inDeg[v] == -1){
+                inDeg[v] = i;
+            }
+            else{
+                bl1 = inDeg[v];
+                bl2 = i;
+            }
+        }
+
+        for(int i=0; i<n; i++){
+            if(i == bl2) continue;
+
+            int u = edges[i][0];
+            int v = edges[i][1];
+
+            if(uf.find(u) == uf.find(v)){
+                if(bl1 == -1){
+                    return edges[i];
+                }
+                else{
+                    return edges[bl1];
+                }
+            }
+            else{
+                uf.union(u,v);
+            }
+        }
+
+        return edges[bl2];
+    }
+}
